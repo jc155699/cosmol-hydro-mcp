@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jc155699/cosmol-hydro-mcp",
+  "title": "COSMOL 2D Flood Studio",
+  "description": "Cloud 2D Shallow Water Equations (2D SWE) flood modelling, hydraulic structure sizing, and civil earthworks via MCP and OpenAPI.",
+  "version": "1.0.0",
+  "websiteUrl": "https://hydro.cosmolsesc.com/",
+  "repository": {
+    "url": "https://github.com/jc155699/cosmol-hydro-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://hydro.cosmolsesc.com/mcp"
+    }
+  ]
+}

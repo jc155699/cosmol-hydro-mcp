@@ -1,0 +1,25 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required: []
+    properties:
+      cosmolHydroUrl:
+        type: string
+        default: "https://hydro.cosmolsesc.com"
+        description: "COSMOL Global 2D Flood Studio base URL"
+      cosmolApiToken:
+        type: string
+        default: ""
+        description: "Optional GLBH-* Bearer token (omit for 2 free full-res runs)"
+  commandFunction:
+    |-
+    (config) => ({
+      command: "python3",
+      args: ["cosmol_hydro_mcp.py"],
+      env: {
+        COSMOL_HYDRO_URL: config.cosmolHydroUrl || "https://hydro.cosmolsesc.com",
+        COSMOL_API_TOKEN: config.cosmolApiToken || ""
+      }
+    })

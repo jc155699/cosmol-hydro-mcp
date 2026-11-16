@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "cosmol-hydro-local": {
+      "command": "python3",
+      "args": ["cosmol_hydro_mcp.py"],
+      "env": {
+        "COSMOL_HYDRO_URL": "https://hydro.cosmolsesc.com",
+        "COSMOL_API_TOKEN": ""
+      }
+    },
+    "cosmol-hydro-remote": {
+      "type": "http",
+      "url": "https://hydro.cosmolsesc.com/mcp"
+    }
+  }
+}
