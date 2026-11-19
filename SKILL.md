@@ -1,48 +1,32 @@
 ---
-name: cosmol-2d-flood-studio
-description: Execute cloud 2D Full-Momentum Shallow Water Equations (2D SWE) flood modelling, hydraulic structure sizing, and civil earthwork balances from local DXF, GeoTIFF, ASCII grid, LiDAR, GeoJSON, or ZIP files via COSMOL Global 2D Flood Studio.
+name: cosmol-hydrogeo-studio
+description: Execute cloud Global GIS/CRS (M00), 2D SWE Flood & Earthworks (M01), Coupled 2D SWE + 3D MODFLOW 6 Seepage (M02), 2D Erosion & HESB Sediment Morphodynamics (M03), and Urban Stormwater LID/WSUD & 1D/2D Sewer (M04) via COSMOL HydroGeo Studio.
 ---
 
-# COSMOL 2D Flood Studio Agent Skill
+# COSMOL HydroGeo Studio Agent Skill (M00-M04, v2.0.0)
 
-Use this skill when the user asks to model 2D overland flooding, riverine inundation, dam breach / spillway hydraulics, stormwater culvert drainage, or cut-and-fill earthworks from terrain or CAD survey inputs.
+Use this skill when the user asks to model global GIS/UTM catchments, 2D shallow-water overland flooding, coupled surface-groundwater MODFLOW 6 seepage/piping, 2D erosion & sediment morphodynamics (SESC/HESB), or urban LID/SuDS/WSUD 1D/2D sewer drainage.
 
-## Capabilities & Supported Inputs
-- **Supported Formats**: `.dxf`, `.tif`, `.tiff`, `.asc`, `.las`, `.laz`, `.geojson`, `.csv`, `.xyz`, `.zip` (automatically desensitised to local metric coordinates before cloud transmission).
-- **Governing Engine**: Godunov-HLLC 2D Full-Momentum Shallow Water Equations (2D SWE), rain-on-grid / inflow hydrographs, hydraulic structures, and mass-balance QA (`<= 0.5%` error gate).
-- **Deliverables**: `Global_2D_SWE_Hydraulic_Report.pdf`, georeferenced `.dxf` CAD flood/structure layers, `.xlsx` quantity schedules, 300-DPI compliance figures, and `HydroStudio_Deliverables_<job_id>.zip`.
+## Five Integrated Modules (Validated on Upper Coomera QLD, EPSG:7856)
+- **M00 (`run_m00_globalgeo_crs_mesh`)**: Auto-UTM (`EPSG:32601..32760`), `(E0, N0)` local metric shift, D8/D-Inf catchment delineation & 3-tier adaptive mesh.
+- **M01 (`run_2d_flood_simulation`)**: 2D Full-Momentum SWE flood routing, spillway/culvert sizing & Design Rev 5 cut/fill earthworks.
+- **M02 (`run_m02_coupled_swe_modflow6`)**: Two-way 2D SWE + 3D MODFLOW 6 DISV+XT3D seepage, cutoff walls & Terzaghi/Sellmeijer piping checks.
+- **M03 (`run_m03_sediment_morpho_sesc`)**: 2D Grid-RUSLE, Wu (2007) sediment morphodynamics & PACl+PAM HESB sizing (`scenario="coomera_sesc_hesb"`).
+- **M04 (`run_m04_urban_stormwater_lid_sewer`)**: Preissmann 1D sewer + 2D urban SWE, MUSIC WSUD/LID & AIDR H1-H6 hazard (`scenario="oxenford_coomera_wsud"`).
 
-## Quota & Billing
-- **Complimentary Trial**: 2 full-resolution unwatermarked runs per anonymous client (`X-Guest-Token` persisted locally or supplied via `COSMOL_GUEST_TOKEN`).
-- **Paid USD Packs (Stripe Checkout)**: Single Pack (`$29 USD` / 1 run), Pro Pack (`$89 USD` / 4 runs), Team Pack (`$249 USD` / 15 runs).
-- **Bearer Token**: Set `COSMOL_API_TOKEN="GLBH-..."` after purchase or pass `--token`.
+## Supported Inputs & Deliverables
+- **Formats**: `.dxf`, `.tif`, `.tiff`, `.asc`, `.las`, `.laz`, `.geojson`, `.shp`, `.csv`, `.xyz`, `.zip` (sample GeoJSON in `examples/upper_coomera_qld/upper_coomera_catchment_survey.geojson`).
+- **Deliverables**: `01_Compliance_Engineering_Report.pdf` (4-page), `.docx`, A3 blueprint PDFs, `.dxf` CAD overlays, `.xlsx` KPI/BOQ schedules, 300-DPI 6-panel atlases, 1200x640 animated `.gif`, interactive `.html` viewers, and `HydroStudio_Deliverables_<job_id>.zip`.
 
-## Execution Workflow
+## Quota, Free Registration & Billing (USD)
+- **Free Trial (`2 + 3 = 5` Runs)**: `2` anonymous runs + `3` bonus runs via `claim_email_bonus_credits` (email or GitHub handle), or register for free at `https://hydro.cosmolsesc.com` (`POST /api/global/auth/register`) to unlock `5` synced credits and a persistent `GLBH-USR-*` key.
+- **Credit Packs**: Starter 4-Pack (`$39 USD`), Pro 15-Pack (`$99 USD`), Consultancy 60-Pack (`$299 USD`).
+- **Subscriptions**: Pro (`$79/mo` or `$759/yr`), Team White-Label (`$249/mo` or `$2,390/yr` with custom company branding).
+- **Bearer Token**: Set `COSMOL_API_TOKEN="GLBH-..."` or pass `--token`.
 
-### Option A — Local CLI (`scripts/hydro_cloud_cli.py`)
-1. Check quota and USD plans:
-   ```bash
-   python3 scripts/hydro_cloud_cli.py quota
-   ```
-2. Upload terrain and run 2D flood simulation (auto-downloads `HydroStudio_Deliverables_<job_id>.zip`):
-   ```bash
-   python3 scripts/hydro_cloud_cli.py run \
-     --file ./site_contours.dxf \
-     --return-period 100 \
-     --storm-pattern alternating_block \
-     --duration-min 120 \
-     --rainfall-mm 180 \
-     --out-dir ./outputs
-   ```
-3. Check status or re-download deliverables for an existing `job_id`:
-   ```bash
-   python3 scripts/hydro_cloud_cli.py status <job_id> --download --out-dir ./outputs
-   ```
-
-### Option B — MCP Server (`cosmol_hydro_mcp.py` or Remote HTTP)
-- **Local stdio MCP** (`cosmol_hydro_mcp.py`): exposes `get_quota_and_pricing`, `upload_local_terrain`, `run_2d_flood_simulation`, and `get_simulation_deliverables`.
-- **Remote Streamable HTTP MCP**: `https://hydro.cosmolsesc.com/mcp` (`protocolVersion: 2024-11-05`).
-- **OpenAPI 3.1.0 Spec**: `https://hydro.cosmolsesc.com/openapi-global.json`.
-
-## Handling Quota Exhaustion (`402 PAYMENT_REQUIRED`)
-- If `run` exits with code `2` (`PAYMENT_REQUIRED`) or returns a Stripe Checkout URL, present the Stripe Checkout URL (`$29 / $89 / $249 USD`) clearly to the user so they can top up credits and supply their `GLBH-*` token.
+## Execution Options
+- **Remote Streamable HTTP MCP**: `https://hydro.cosmolsesc.com/mcp` (`2025-06-18`)
+- **GitHub `uvx` (No PyPI Wait)**: `uvx --from git+https://github.com/jc155699/cosmol-hydro-mcp cosmol-hydrogeo-mcp`
+- **PyPI / npm**: `uvx cosmol-hydrogeo-mcp` | `npx -y @cosmol/hydrogeo-mcp`
+- **OpenAPI 3.1.0**: `https://hydro.cosmolsesc.com/openapi-global.json`
+- **Sample CLI Run**: `python3 scripts/hydro_cloud_cli.py run --module m00 --file examples/upper_coomera_qld/upper_coomera_catchment_survey.geojson --lon 153.215 --lat -28.055 --out-dir ./outputs`

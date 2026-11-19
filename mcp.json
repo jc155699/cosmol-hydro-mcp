@@ -1,6 +1,22 @@
 {
   "mcpServers": {
-    "cosmol-hydro-local": {
+    "cosmol-hydrogeo-uvx": {
+      "command": "uvx",
+      "args": ["cosmol-hydrogeo-mcp"],
+      "env": {
+        "COSMOL_HYDRO_URL": "https://hydro.cosmolsesc.com",
+        "COSMOL_API_TOKEN": ""
+      }
+    },
+    "cosmol-hydrogeo-npx": {
+      "command": "npx",
+      "args": ["-y", "@cosmol/hydrogeo-mcp"],
+      "env": {
+        "COSMOL_HYDRO_URL": "https://hydro.cosmolsesc.com",
+        "COSMOL_API_TOKEN": ""
+      }
+    },
+    "cosmol-hydrogeo-python": {
       "command": "python3",
       "args": ["cosmol_hydro_mcp.py"],
       "env": {
@@ -8,7 +24,7 @@
         "COSMOL_API_TOKEN": ""
       }
     },
-    "cosmol-hydro-remote": {
+    "cosmol-hydrogeo-remote": {
       "type": "http",
       "url": "https://hydro.cosmolsesc.com/mcp"
     }

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainer": "COSMOL HydroGeo Studio",
+  "name": "cosmol-hydrogeo-mcp",
+  "description": "Unified Cloud GIS, 2D SWE Flood, MODFLOW 6 Groundwater Seepage, 2D Sediment Morphodynamics & Urban LID/Sewer MCP Server (2+3=5 free runs).",
+  "repository": "https://github.com/jc155699/cosmol-hydro-mcp",
+  "homepage": "https://hydro.cosmolsesc.com/",
+  "license": "MIT",
+  "categories": ["science", "geospatial", "engineering", "simulation"],
+  "transports": ["streamable-http", "stdio"],
+  "remoteUrl": "https://hydro.cosmolsesc.com/mcp",
+  "environmentVariables": [
+    {
+      "name": "COSMOL_HYDRO_URL",
+      "required": false,
+      "default": "https://hydro.cosmolsesc.com"
+    },
+    {
+      "name": "COSMOL_API_TOKEN",
+      "required": false,
+      "default": ""
+    }
+  ]
+}

@@ -1,10 +1,15 @@
 # OpenAI Codex CLI MCP Server Configuration
 # Copy into ~/.codex/config.toml
 
-[mcp_servers.cosmol_hydro]
-command = "python3"
-args = ["cosmol_hydro_mcp.py"]
+[mcp_servers.cosmol_hydrogeo_remote]
+url = "https://hydro.cosmolsesc.com/mcp"
+
+[mcp_servers.cosmol_hydrogeo_uvx]
+command = "uvx"
+args = ["cosmol-hydrogeo-mcp"]
 env = { COSMOL_HYDRO_URL = "https://hydro.cosmolsesc.com" }
 
-[mcp_servers.cosmol_hydro_remote]
-url = "https://hydro.cosmolsesc.com/mcp"
+[mcp_servers.cosmol_hydrogeo_npx]
+command = "npx"
+args = ["-y", "@cosmol/hydrogeo-mcp"]
+env = { COSMOL_HYDRO_URL = "https://hydro.cosmolsesc.com" }

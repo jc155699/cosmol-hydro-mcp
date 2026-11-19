@@ -8,16 +8,16 @@ startCommand:
       cosmolHydroUrl:
         type: string
         default: "https://hydro.cosmolsesc.com"
-        description: "COSMOL Global 2D Flood Studio base URL"
+        description: "COSMOL HydroGeo Studio base URL"
       cosmolApiToken:
         type: string
         default: ""
-        description: "Optional GLBH-* Bearer token (omit for 2 free full-res runs)"
+        description: "Optional GLBH-* Bearer token (omit for 2 free + 3 email bonus runs = 5 free)"
   commandFunction:
     |-
     (config) => ({
-      command: "python3",
-      args: ["cosmol_hydro_mcp.py"],
+      command: "npx",
+      args: ["-y", "@cosmol/hydrogeo-mcp"],
       env: {
         COSMOL_HYDRO_URL: config.cosmolHydroUrl || "https://hydro.cosmolsesc.com",
         COSMOL_API_TOKEN: config.cosmolApiToken || ""
