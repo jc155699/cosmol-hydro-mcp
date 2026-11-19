@@ -1,0 +1,97 @@
+{
+  "type": "FeatureCollection",
+  "name": "Upper_Coomera_Catchment_Survey_QLD",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CATCH-COOMERA-01",
+        "role": "catchment_boundary",
+        "name": "Upper Coomera River Catchment, QLD"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              153.19640816722952,
+              -28.088653788588406
+            ],
+            [
+              153.23433018523133,
+              -28.088594267075226
+            ],
+            [
+              153.2342579628506,
+              -28.05530420786912
+            ],
+            [
+              153.19634763250815,
+              -28.055363646535987
+            ],
+            [
+              153.19640816722952,
+              -28.088653788588406
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "STR-COOMERA-01",
+        "role": "thalweg",
+        "name": "Upper Coomera River Mainstem"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            153.196732,
+            -28.054469
+          ],
+          [
+            153.196743,
+            -28.060517
+          ],
+          [
+            153.201431,
+            -28.066316
+          ],
+          [
+            153.203092,
+            -28.07212
+          ],
+          [
+            153.20503,
+            -28.078165
+          ],
+          [
+            153.208618,
+            -28.083965
+          ],
+          [
+            153.208629,
+            -28.089771
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "GAUGE-COOMERA-01",
+        "role": "hydrometric_station",
+        "name": "Coomera Valley Outlet Gauge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          153.208629,
+          -28.089771
+        ]
+      }
+    }
+  ]
+}
