@@ -16,8 +16,8 @@ startCommand:
   commandFunction:
     |-
     (config) => ({
-      command: "npx",
-      args: ["-y", "@cosmol/hydrogeo-mcp"],
+      command: "python3",
+      args: ["cosmol_hydro_mcp.py"],
       env: {
         COSMOL_HYDRO_URL: config.cosmolHydroUrl || "https://hydro.cosmolsesc.com",
         COSMOL_API_TOKEN: config.cosmolApiToken || ""
