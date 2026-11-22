@@ -25,7 +25,7 @@ def _guest_token() -> str:
 
 
 def _headers(token: str = "", ctype: str | None = None) -> dict[str, str]:
-    h = {"User-Agent": "cosmol-hydrogeo-cli/2.0.0", "X-Guest-Token": _guest_token()}
+    h = {"User-Agent": "cosmol-hydrogeo-cli/2.1.0", "X-Guest-Token": _guest_token()}
     if tok := (token or os.environ.get("COSMOL_API_TOKEN") or "").strip():
         h["Authorization"] = f"Bearer {tok}"
     return {**h, "Content-Type": ctype} if ctype else h
@@ -70,6 +70,7 @@ def _download_bundle(base: str, job: dict[str, Any], out_dir: str, token: str = 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="COSMOL HydroGeo Studio CLI (M00-M04)")
+    ap.add_argument("-V", "--version", action="version", version="cosmol-hydrogeo-cli 2.1.0")
     ap.add_argument("--url", default=DEFAULT_URL, help="Base API URL (default: https://hydro.cosmolsesc.com)")
     ap.add_argument("--token", default="", help="Optional GLBH-* Bearer token")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -84,11 +85,13 @@ def main() -> int:
         rn_p.add_argument(flg, default=kw.get("default", ""))
     rn_p.add_argument("--return-period", type=int, default=100)
     rn_p.add_argument("--duration-min", type=int, default=180)
-    rn_p.add_argument("--rainfall-mm", type=float, default=144.0)
+    rn_p.add_argument("--rainfall-mm", type=float, default=0.0, help="Optional storm depth override in mm (0 = auto regional Koppen-Geiger IDF)")
     rn_p.add_argument("--inflow-m3s", type=float, default=0.0)
     rn_p.add_argument("--cutoff-depth", type=float, default=18.0)
     rn_p.add_argument("--lon", type=float, default=None)
     rn_p.add_argument("--lat", type=float, default=None)
+    rn_p.add_argument("--elev-units", choices=["auto", "m", "ft"], default="auto")
+    rn_p.add_argument("--crs-label", default="")
     rn_p.add_argument("--has-dam", action="store_true")
     rn_p.add_argument("--no-dosing", action="store_true")
     rn_p.add_argument("--no-lid", action="store_true")
@@ -109,13 +112,18 @@ def main() -> int:
         up_id = args.upload_id.strip() or (str(_upload(args.url, args.file, "", args.token)["upload_id"]) if args.file else "")
         payload: dict[str, Any] = {
             "module_id": args.module, "case_id": args.case_id, "scenario": args.scenario, "return_period": args.return_period,
-            "storm_pattern": args.storm_pattern, "duration_min": args.duration_min, "rainfall_mm": args.rainfall_mm,
+            "storm_pattern": args.storm_pattern, "duration_min": args.duration_min,
             "inflow_m3s": args.inflow_m3s, "cutoff_depth_m": args.cutoff_depth, "has_dam": args.has_dam,
             "no_dosing": args.no_dosing, "no_lid": args.no_lid, "site_name": args.site_name,
             "white_label_company": args.white_label, "place": args.place,
+            "elev_units": args.elev_units, "crs_label": args.crs_label,
         }
-        if args.lon is not None and args.lat is not None:
-            payload.update({"lon": args.lon, "lat": args.lat})
+        if args.rainfall_mm and args.rainfall_mm > 0:
+            payload["rainfall_mm"] = args.rainfall_mm
+        if args.lon is not None:
+            payload["lon"] = args.lon
+        if args.lat is not None:
+            payload["lat"] = args.lat
         if up_id:
             payload["upload_id"] = up_id
         st, out = _req(args.url, "/api/global/run", "POST", json.dumps(payload).encode("utf-8"), "application/json", args.token)
