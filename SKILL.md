@@ -3,16 +3,17 @@ name: cosmol-hydrogeo-studio
 description: Execute cloud Global GIS/CRS (M00), 2D SWE Flood & Earthworks (M01), Coupled 2D SWE + 3D MODFLOW 6 Seepage (M02), 2D Erosion & HESB Sediment Morphodynamics (M03), and Urban Stormwater LID/WSUD & 1D/2D Sewer (M04) via COSMOL HydroGeo Studio.
 ---
 
-# COSMOL HydroGeo Studio Agent Skill (M00-M04, v2.0.0)
+# COSMOL HydroGeo Studio Agent Skill (M00-M04, v2.1.0)
 
 Use this skill when the user asks to model global GIS/UTM catchments, 2D shallow-water overland flooding, coupled surface-groundwater MODFLOW 6 seepage/piping, 2D erosion & sediment morphodynamics (SESC/HESB), or urban LID/SuDS/WSUD 1D/2D sewer drainage.
 
-## Five Integrated Modules (Validated on Upper Coomera QLD, EPSG:7856)
-- **M00 (`run_m00_globalgeo_crs_mesh`)**: Auto-UTM (`EPSG:32601..32760`), `(E0, N0)` local metric shift, D8/D-Inf catchment delineation & 3-tier adaptive mesh.
-- **M01 (`run_2d_flood_simulation`)**: 2D Full-Momentum SWE flood routing, spillway/culvert sizing & Design Rev 5 cut/fill earthworks.
-- **M02 (`run_m02_coupled_swe_modflow6`)**: Two-way 2D SWE + 3D MODFLOW 6 DISV+XT3D seepage, cutoff walls & Terzaghi/Sellmeijer piping checks.
-- **M03 (`run_m03_sediment_morpho_sesc`)**: 2D Grid-RUSLE, Wu (2007) sediment morphodynamics & PACl+PAM HESB sizing (`scenario="coomera_sesc_hesb"`).
-- **M04 (`run_m04_urban_stormwater_lid_sewer`)**: Preissmann 1D sewer + 2D urban SWE, MUSIC WSUD/LID & AIDR H1-H6 hazard (`scenario="oxenford_coomera_wsud"`).
+## Five Integrated Modules & Universal v2.1.0 Features
+- **M00 (`run_m00_globalgeo_crs_mesh`)**: `EPSG:4326` GeoTIFF auto-UTM warp (`EPSG:32601..32760`), Civil 3D `LWPOLYLINE` code-38 DXF contours, `elev_units` (`auto`/`m`/`ft`), `(E0, N0)` metric shift, D8 catchment & 3-tier adaptive mesh.
+- **M01 (`run_2d_flood_simulation`)**: 2D Full-Momentum SWE flood routing, Koppen-Geiger regional IDF (`rainfall_mm=0`), spillway/culvert sizing & Design Rev 5 cut/fill earthworks.
+- **M02 (`run_m02_coupled_swe_modflow6`)**: Two-way 2D SWE + 3D MODFLOW 6 DISV+XT3D seepage, Theis/Cooper-Jacob, cutoff walls & Terzaghi/Sellmeijer piping checks.
+- **M03 (`run_m03_sediment_morpho_sesc`)**: 2D Grid-RUSLE, Wu (2007) sediment morphodynamics & PACl+PAM HESB sizing (`scenario="global_sesc_morpho"`).
+- **M04 (`run_m04_urban_stormwater_lid_sewer`)**: Preissmann 1D sewer + 2D urban SWE, LID/SuDS/WSUD & flood hazard (`scenario="global_wsud_1d2d"`).
+- **5-Jurisdiction Auto-Adapter**: Automatically resolves statutory standards across `US/CA`, `UK`, `EU`, `AU/NZ`, and `Global` from `(lon, lat)`, `place`, or `crs_label`.
 
 ## Supported Inputs & Deliverables
 - **Formats**: `.dxf`, `.tif`, `.tiff`, `.asc`, `.las`, `.laz`, `.geojson`, `.shp`, `.csv`, `.xyz`, `.zip` (sample GeoJSON in `examples/upper_coomera_qld/upper_coomera_catchment_survey.geojson`).

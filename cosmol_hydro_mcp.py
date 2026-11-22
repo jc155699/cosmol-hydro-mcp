@@ -16,22 +16,36 @@ _MOD_TOOLS = {
     "run_m00_globalgeo_crs_mesh": "m00", "run_2d_flood_simulation": "m01",
     "run_m02_coupled_swe_modflow6": "m02", "run_m03_sediment_morpho_sesc": "m03",
     "run_m04_urban_stormwater_lid_sewer": "m04",
+    "run_hydrogeo_m00": "m00", "run_hydrogeo_m01": "m01",
+    "run_hydrogeo_m02": "m02", "run_hydrogeo_m03": "m03", "run_hydrogeo_m04": "m04",
 }
 
 def _t(name: str, desc: str, props: dict[str, Any], req: list[str] | None = None) -> dict[str, Any]:
     s: dict[str, Any] = {"type": "object", "properties": props}
     return {"name": name, "description": desc, "inputSchema": {**s, "required": req} if req else s}
 
-_RUN_COMMON = {"upload_id": {"type": "string"}, "local_file_path": {"type": "string"}, "site_name": {"type": "string"}, "white_label_company": {"type": "string"}, "output_dir": {"type": "string"}}
+_RUN_COMMON = {
+    "upload_id": {"type": "string"},
+    "local_file_path": {"type": "string"},
+    "lon": {"type": "number", "description": "WGS84 longitude (decimal degrees)"},
+    "lat": {"type": "number", "description": "WGS84 latitude (decimal degrees)"},
+    "place": {"type": "string", "description": "Global city, catchment, or basin search query"},
+    "elev_units": {"type": "string", "enum": ["auto", "m", "ft"], "default": "auto", "description": "Vertical units of input survey/DEM"},
+    "crs_label": {"type": "string", "description": "Optional manual CRS label override"},
+    "site_name": {"type": "string"},
+    "white_label_company": {"type": "string"},
+    "output_dir": {"type": "string"},
+}
+_RAIN_PROP = {"type": "number", "default": 0, "description": "Optional storm depth override in mm (0 = auto regional Koppen-Geiger IDF)"}
 TOOLS: list[dict[str, Any]] = [
     _t("get_quota_and_pricing", "Check credits (2 free + 3 w/ email = 5), 5 modules & USD plans ($39/$99/$299 + $79/$249 subs).", {}),
     _t("claim_email_bonus_credits", "Unlock +3 bonus free credits (2 -> 5) via work email or GitHub handle.", {"email": {"type": "string"}, "contact": {"type": "string"}}),
-    _t("upload_terrain_base64", "Upload terrain/CAD/GIS (.dxf/.tif/.asc/.las/.geojson/.zip) as base64, text or local_file_path.", {"filename": {"type": "string"}, "content_base64": {"type": "string"}, "content_text": {"type": "string"}, "local_file_path": {"type": "string"}, "upload_id": {"type": "string"}}),
-    _t("run_m00_globalgeo_crs_mesh", "M00: Auto-UTM CRS detection, D8 catchment & adaptive mesh.", {**_RUN_COMMON, "lon": {"type": "number"}, "lat": {"type": "number"}, "place": {"type": "string"}}),
-    _t("run_2d_flood_simulation", "M01: 2D Full-Momentum SWE flood, structures & Design Rev 5 earthworks.", {**_RUN_COMMON, "case_id": {"type": "string"}, "return_period": {"type": "integer", "default": 100}, "storm_pattern": {"type": "string", "default": "chicago"}, "duration_min": {"type": "integer", "default": 180}, "rainfall_mm": {"type": "number", "default": 144.0}, "inflow_m3s": {"type": "number", "default": 0.0}, "has_dam": {"type": "boolean", "default": False}}),
-    _t("run_m02_coupled_swe_modflow6", "M02: Coupled 2D SWE + 3D MODFLOW 6 DISV+XT3D seepage & piping.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "levee_piping"}, "return_period": {"type": "integer", "default": 100}, "cutoff_depth_m": {"type": "number", "default": 18.0}}),
-    _t("run_m03_sediment_morpho_sesc", "M03: 2D Grid-RUSLE erosion, Wu (2007) sediment & PACl+PAM HESB SESC.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "coomera_sesc_hesb"}, "return_period": {"type": "integer", "default": 50}, "rainfall_mm": {"type": "number", "default": 178.0}, "duration_min": {"type": "integer", "default": 180}, "no_dosing": {"type": "boolean", "default": False}}),
-    _t("run_m04_urban_stormwater_lid_sewer", "M04: Preissmann 1D sewer + 2D urban SWE, LID/SuDS/WSUD & AIDR H1-H6.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "oxenford_coomera_wsud"}, "return_period": {"type": "integer", "default": 50}, "rainfall_mm": {"type": "number", "default": 178.0}, "duration_min": {"type": "integer", "default": 180}, "no_lid": {"type": "boolean", "default": False}}),
+    _t("upload_terrain_base64", "Upload terrain/CAD/GIS (.tif/.tiff/.dxf/.asc/.las/.geojson/.xyz/.zip) as base64, text or local_file_path.", {"filename": {"type": "string"}, "content_base64": {"type": "string"}, "content_text": {"type": "string"}, "local_file_path": {"type": "string"}, "upload_id": {"type": "string"}}),
+    _t("run_m00_globalgeo_crs_mesh", "M00: Multi-format survey ingestion, 5-jurisdiction Auto-UTM CRS detection, D8 catchment & adaptive mesh.", {**_RUN_COMMON}),
+    _t("run_2d_flood_simulation", "M01: 2D Full-Momentum SWE flood, structures & Design Rev 5 earthworks.", {**_RUN_COMMON, "case_id": {"type": "string"}, "return_period": {"type": "integer", "default": 100}, "storm_pattern": {"type": "string", "default": "chicago"}, "duration_min": {"type": "integer", "default": 180}, "rainfall_mm": _RAIN_PROP, "inflow_m3s": {"type": "number", "default": 0.0}, "has_dam": {"type": "boolean", "default": False}}),
+    _t("run_m02_coupled_swe_modflow6", "M02: Coupled 2D SWE + 3D MODFLOW 6 DISV+XT3D seepage, Theis/Cooper-Jacob & piping.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "levee_piping"}, "return_period": {"type": "integer", "default": 100}, "cutoff_depth_m": {"type": "number", "default": 18.0}}),
+    _t("run_m03_sediment_morpho_sesc", "M03: 2D Grid-RUSLE erosion, Wu (2007) sediment & PACl+PAM HESB SESC.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "global_sesc_morpho"}, "return_period": {"type": "integer", "default": 50}, "rainfall_mm": _RAIN_PROP, "duration_min": {"type": "integer", "default": 180}, "no_dosing": {"type": "boolean", "default": False}}),
+    _t("run_m04_urban_stormwater_lid_sewer", "M04: Preissmann 1D sewer + 2D urban SWE, LID/SuDS/WSUD & flood hazard.", {**_RUN_COMMON, "scenario": {"type": "string", "default": "global_wsud_1d2d"}, "return_period": {"type": "integer", "default": 50}, "rainfall_mm": _RAIN_PROP, "duration_min": {"type": "integer", "default": 180}, "no_lid": {"type": "boolean", "default": False}}),
     _t("get_simulation_deliverables", "Fetch KPIs and download HydroStudio_Deliverables_<job_id>.zip locally.", {"job_id": {"type": "string"}, "output_dir": {"type": "string"}, "download": {"type": "boolean", "default": True}}, ["job_id"]),
 ]
 
@@ -48,7 +62,7 @@ def _guest_token() -> str:
     return tok
 
 def _headers(ctype: str | None = None) -> dict[str, str]:
-    h = {"User-Agent": "cosmol-hydrogeo-mcp/2.0.0", "X-Guest-Token": _guest_token()}
+    h = {"User-Agent": "cosmol-hydrogeo-mcp/2.1.0", "X-Guest-Token": _guest_token()}
     if API_TOKEN:
         h["Authorization"] = f"Bearer {API_TOKEN}"
     return {**h, "Content-Type": ctype} if ctype else h
@@ -112,6 +126,8 @@ def _call_tool(name: str, args: dict[str, Any]) -> tuple[dict[str, Any], str]:
         if args.get("local_file_path") and not up_id:
             up_id = str(_upload_file(str(args["local_file_path"]))["upload_id"])
         payload = {k: v for k, v in args.items() if k not in {"local_file_path", "output_dir"}}
+        if "rainfall_mm" in payload and (payload["rainfall_mm"] is None or float(payload["rainfall_mm"]) <= 0):
+            payload.pop("rainfall_mm", None)
         if name != "run_2d_flood_simulation" or "module_id" in args:
             payload.setdefault("module_id", _MOD_TOOLS[name])
         if up_id:
@@ -136,7 +152,7 @@ def _call_tool(name: str, args: dict[str, Any]) -> tuple[dict[str, Any], str]:
 
 def main() -> None:
     if any(a in ("-V", "--version") for a in sys.argv[1:]):
-        print("cosmol-hydrogeo-mcp 2.0.0")
+        print("cosmol-hydrogeo-mcp 2.1.0")
         return
     if any(a in ("-h", "--help") for a in sys.argv[1:]):
         print("COSMOL HydroGeo Studio MCP stdio server (https://hydro.cosmolsesc.com)")
@@ -153,7 +169,7 @@ def main() -> None:
             continue
         if method == "initialize":
             pv = str(params.get("protocolVersion") or "").strip()
-            res: dict[str, Any] = {"protocolVersion": pv if pv in PROTOCOLS else PROTOCOLS[0], "capabilities": {"tools": {"listChanged": False}}, "serverInfo": {"name": "cosmol-hydrogeo-mcp", "version": "2.0.0"}}
+            res: dict[str, Any] = {"protocolVersion": pv if pv in PROTOCOLS else PROTOCOLS[0], "capabilities": {"tools": {"listChanged": False}}, "serverInfo": {"name": "cosmol-hydrogeo-mcp", "version": "2.1.0"}}
         elif method == "ping":
             res = {}
         elif method == "tools/list":

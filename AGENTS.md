@@ -1,9 +1,10 @@
-# AGENTS.md — COSMOL HydroGeo Studio Thin Connector (v2.0.0)
+# AGENTS.md - COSMOL HydroGeo Studio Thin Connector (v2.1.0)
 
 This repository provides a zero-dependency MCP `stdio` bridge (`cosmol_hydro_mcp.py`), portable `SKILL.md` package, `pyproject.toml`, Australian QLD benchmark GeoJSON, and CLI client (`scripts/hydro_cloud_cli.py`) for **COSMOL HydroGeo Studio** (`https://hydro.cosmolsesc.com`).
 
 ## Architecture Rules
-- **Thin API/MCP Client Only**: All GIS/Auto-UTM (`M00`), 2D SWE (`M01`), 3D MODFLOW 6 seepage (`M02`), 2D sediment morphodynamics (`M03`, `coomera_sesc_hesb`), urban 1D/2D sewer + LID (`M04`, `oxenford_coomera_wsud`), CAD, GIF, and PDF/Excel deliverable compilation execute remotely on `https://hydro.cosmolsesc.com`. Never fabricate numerical outputs locally.
+- **Thin API/MCP Client Only**: All GIS/Auto-UTM (`M00`), 2D SWE (`M01`), 3D MODFLOW 6 seepage (`M02`), 2D sediment morphodynamics (`M03`, `global_sesc_morpho`), urban 1D/2D sewer + LID (`M04`, `global_wsud_1d2d`), 5-Jurisdiction Auto-Adapter (`US/UK/EU/AU/Global`), Koppen-Geiger regional IDF (`rainfall_mm=0`), CAD, GIF, and PDF/Excel deliverable compilation execute remotely on `https://hydro.cosmolsesc.com`. Never fabricate numerical outputs locally.
+- **Universal Survey Ingestion**: Supports `EPSG:4326` GeoTIFF auto-UTM warp, Civil 3D `LWPOLYLINE` code-38 DXF contours, `elev_units` (`auto`, `m`, `ft`), `crs_label`, `(lon, lat)`, and `place` across all 5 modules (`M00`-`M04` plus `run_hydrogeo_m00..m04` aliases).
 - **Zero External Dependencies**: Both `cosmol_hydro_mcp.py` and `scripts/hydro_cloud_cli.py` run cleanly on Python 3.10+ standard library.
 - **Automatic Local Download**: Completed runs download `HydroStudio_Deliverables_<job_id>.zip` into `--out-dir` / `COSMOL_OUTPUT_DIR`.
 

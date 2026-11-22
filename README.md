@@ -1,11 +1,17 @@
-# COSMOL HydroGeo Studio™ v2.0 — Multi-Physics Cloud Engine & MCP (`cosmol-hydrogeo-mcp`)
+# COSMOL HydroGeo Studio v2.1.0 - Multi-Physics Cloud Engine & MCP (`cosmol-hydrogeo-mcp`)
 
 [![Live Web Studio](https://img.shields.io/badge/Web_Studio-hydro.cosmolsesc.com-0ea5e9)](https://hydro.cosmolsesc.com)
 [![MCP Protocol](https://img.shields.io/badge/MCP-Streamable_HTTP_2025--06--18-10b981)](https://hydro.cosmolsesc.com/mcp)
 [![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1.0-f59e0b)](https://hydro.cosmolsesc.com/openapi-global.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-64748b)](LICENSE)
 
-Zero-dependency Model Context Protocol (MCP) server, Python `stdio` bridge, CLI client, and `SKILL.md` / `AGENTS.md` pack connecting **Claude, Cursor, VS Code, OpenAI Codex, and custom AI agents** directly to **COSMOL HydroGeo Studio™** ([https://hydro.cosmolsesc.com](https://hydro.cosmolsesc.com)).
+Zero-dependency Model Context Protocol (MCP) server, Python `stdio` bridge, CLI client, and `SKILL.md` / `AGENTS.md` pack connecting **Claude, Cursor, VS Code, OpenAI Codex, and custom AI agents** directly to **COSMOL HydroGeo Studio** ([https://hydro.cosmolsesc.com](https://hydro.cosmolsesc.com)).
+
+## What's New in v2.1.0 (Universal Global Survey & Climate Engine)
+
+- **Universal Survey & CAD Ingestion**: Automatic `EPSG:4326` WGS84 GeoTIFF/TIFF -> local metric Auto-UTM warp, Civil 3D / 12d `LWPOLYLINE` code-38 DXF contour extraction, `.geojson`, `.asc`, `.las`, `.xyz`, and `.zip` bundles.
+- **Vertical Units & CRS Overrides**: Native `elev_units` (`"auto"`, `"m"`, or `"ft"`) and `crs_label` across all 5 modules (`M00`-`M04` + `run_hydrogeo_m00..m04` aliases).
+- **5-Jurisdiction Statutory Auto-Adapter & Koppen-Geiger IDF**: Automatic regional statutory framing (`US/CA`, `UK`, `EU`, `AU/NZ`, `Global`) and Koppen-Geiger climate IDF design rainfall when `rainfall_mm = 0`.
 
 ---
 
